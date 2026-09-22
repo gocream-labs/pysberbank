@@ -1,5 +1,162 @@
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
 
-[tool.black]
-target-version = ['py38']
+
+[project]
+name = "gocream-pysberbank"
+description = "Python client for the legacy Sberbank payment API."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+authors = [
+	{ name = "Dmitry Dobrynin", email = "dd@tovarisch.engineer" },
+]
+classifiers = [
+	"Development Status :: 3 - Alpha",
+	"Environment :: Web Environment",
+	"Intended Audience :: Developers",
+	"Natural Language :: Russian",
+	"Operating System :: OS Independent",
+	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3.10",
+	"Programming Language :: Python :: 3.11",
+	"Programming Language :: Python :: 3.12",
+	"Programming Language :: Python :: 3.13",
+	"Programming Language :: Python :: 3.14",
+	"Programming Language :: Python :: 3 :: Only",
+]
+dependencies = ["requests>=2.18.4,<3"]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://gocream-labs.github.io/pysberbank/"
+Documentation = "https://gocream-labs.github.io/pysberbank/"
+Repository = "https://github.com/gocream-labs/pysberbank"
+Changelog = "https://github.com/gocream-labs/pysberbank/blob/master/CHANGELOG.md"
+"Bug Tracker" = "https://github.com/gocream-labs/pysberbank/issues"
+
+
+[tool.hatch.version]
+source = "code"
+path = "gocream_pysberbank/__init__.py"
+
+[tool.hatch.build]
+skip-excluded-dirs = true
+exclude = [
+	"/dist",
+	"/site",
+	"/.editorconfig",
+	"/.mailmap",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["gocream_pysberbank"]
+
+
+[dependency-groups]
+lint = [
+	"pre-commit==4.6.0",
+	"ruff==0.15.14",
+]
+test = [
+	"pytest==9.1.1",
+	"pytest-cov==7.1.0",
+	"pytest-socket==0.8.0",
+]
+
+
+[tool.hatch.envs.default]
+description = "Dev environment"
+python = "3.10"
+dependency-groups = ["test", "lint"]
+
+[tool.hatch.envs.default.scripts]
+init = [
+	"git config --local blame.ignoreRevsFile .git-blame-ignore-revs",
+	"pre-commit install --hook-type pre-commit --hook-type commit-msg",
+]
+remove = [
+	"git config --local --unset blame.ignoreRevsFile",
+	"pre-commit uninstall --hook-type pre-commit",
+	"pre-commit uninstall --hook-type commit-msg",
+]
+
+
+[tool.hatch.envs.lint]
+description = "Lint environment"
+detached = true
+python = "3.14"
+dependency-groups = ["lint"]
+
+[tool.hatch.envs.lint.scripts]
+check = "ruff check {args:.}"
+fmt-check = "ruff format --check --diff {args:.}"
+format = [
+	"ruff check --fix {args:.}",
+	"ruff format {args:.}",
+]
+commit = "bash scripts/commit-lint.sh"
+
+
+[tool.hatch.envs.test]
+description = "Tests on the minimum supported Python"
+python = "3.10"
+dependency-groups = ["test"]
+
+[tool.hatch.envs.test.scripts]
+check = "pytest {args:--cov=gocream_pysberbank --cov-report term-missing}"
+
+
+[tool.hatch.envs.mtest]
+description = "Test matrix environment"
+dependency-groups = ["test"]
+
+[tool.hatch.envs.mtest.scripts]
+check = "pytest {args:-q --cov=gocream_pysberbank --cov-report=xml}"
+
+[[tool.hatch.envs.mtest.matrix]]
+python = ["3.10", "3.11", "3.12", "3.13", "3.14"]
+
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+show-fixes = true
+
+[tool.ruff.lint]
+# Начальный набор проверок; старые замечания исправляются отдельным этапом.
+select = ["E4", "E7", "E9", "F", "I", "UP"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["gocream_pysberbank", "tests"]
+force-single-line = true
+lines-after-imports = 2
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401", "F403"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+
+[tool.coverage.run]
+source = ["gocream_pysberbank"]
+omit = ["*/tests/*"]
+relative_files = true
+
+[tool.coverage.report]
+exclude_lines = ["pragma: no cover", "if TYPE_CHECKING:"]
+
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# Существующие модули называются register.py, refund.py и т. п.
+# __init__.py не собирается, чтобы не дублировать импортированные TestCase.
+python_files = ["*.py"]
+addopts = "--disable-socket --ignore=tests/__init__.py"

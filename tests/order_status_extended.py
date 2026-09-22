@@ -8,8 +8,8 @@ import json
 import requests
 import unittest
 
-from pysberbank import Sberbank
-import pysberbank
+from gocream_pysberbank import Sberbank
+import gocream_pysberbank
 
 
 
@@ -123,7 +123,7 @@ class OrderStatusExtendedTestCase(TestCase):
                 if k in ['42', '0']:
                     continue
 
-                with self.assertRaises(pysberbank.errors.SberbankApiException):
+                with self.assertRaises(gocream_pysberbank.errors.SberbankApiException):
                     response = api.order_status_extended(k)
 
 

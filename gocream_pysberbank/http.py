@@ -10,7 +10,7 @@ from .errors import SberbankException
 from .errors import SberbankRequestException
 
 
-logger = logging.getLogger("pysberbank")
+logger = logging.getLogger("gocream_pysberbank")
 
 
 DEFAULT_URL = "https://3dsec.sberbank.ru/payment/{api_type}/{method}"

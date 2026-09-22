@@ -1,0 +1,9 @@
+[general]
+ignore=B6,T5
+
+[title-match-regex]
+# Gitlint проверяет только форму заголовка. Автоматизация релизов настраивается отдельным этапом.
+regex=^\S+ \([a-z][a-z0-9-]*\): .+$
+
+[title-max-length]
+line-length=100
