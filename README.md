@@ -1,8 +1,12 @@
 # gocream-pysberbank
 
-API - [link][api_url]
+Python-клиент для [унаследованного API СберБанка][api_url], который ЮKassa
+сохраняет для компаний, перешедших из Сбера. Это не клиент для современного
+API ЮKassa.
 
-Тестовые карты - [link][test_cards]
+Описание протокола - [инструкция ЮKassa][protocol_spec].
+Архивные материалы СберБанка - [документация API][sberbank_api_url] и
+[тестовые карты][sberbank_test_cards].
 
 
 ## Installation
@@ -12,10 +16,12 @@ python -m pip install gocream-pysberbank
 ```
 
 ```python
-from gocream_pysberbank import Sberbank
+from gocream_pysberbank import SberbankClient
 from gocream_pysberbank.constants import DESCRIPTION_BY_ACTION_CODE
-from gocream_pysberbank.http import SberbankPaymentApi
 ```
+
+Для совместимости с прежним API сохранены имена `Sberbank` и
+`SberbankPaymentApi`.
 
 
 ## Development
@@ -43,5 +49,7 @@ hatch build --clean
 * test flask app
 
 
-[api_url]: https://securepayments.sberbank.ru/wiki/doku.php/integration:api:start
-[test_cards]: https://securepayments.sberbank.ru/wiki/doku.php/test_cards
+[api_url]: https://yookassa.ru/docs/support/payments/onboarding/integration-sber
+[protocol_spec]: https://yoomoney.ru/i/forms/yc-program-interface-api-sberbank.pdf
+[sberbank_api_url]: https://securepayments.sberbank.ru/wiki/doku.php/integration:api:start
+[sberbank_test_cards]: https://securepayments.sberbank.ru/wiki/doku.php/test_cards

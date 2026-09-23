@@ -19,10 +19,8 @@ DEFAULT_LANGUAGE = "ru"
 DEFAULT_CURREBCY = 643
 
 
-class SberbankPaymentApi:
-    """
-        sberbank payment api
-    """
+class SberbankClient:
+    """Client for the legacy SberBank payment API maintained by YooKassa."""
 
     def __init__(self, username=None, password=None, token=None,
                  url=DEFAULT_URL, api_type=DEFAULT_API_TYPE,
@@ -317,3 +315,7 @@ class SberbankPaymentApi:
         result = self._make_request(url or self.url, api_type or self.api_type,
                                     'getOrderStatusExtended', params, **kwargs)
         return result
+
+
+# Backward-compatible public name used by pysberbank releases up to 0.1.9.
+SberbankPaymentApi = SberbankClient
