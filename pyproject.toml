@@ -8,7 +8,7 @@ name = "gocream-pysberbank"
 description = "Python client for the legacy SberBank payment API maintained by YooKassa."
 readme = "README.md"
 requires-python = ">=3.10"
-license = "GPL-3.0-or-later"
+license = "MPL-2.0"
 license-files = ["LICENSE"]
 keywords = [
 	"payments",
