@@ -108,11 +108,11 @@ class SberbankClient:
         # request params
         kwargs.setdefault('timeout', (3, 27))
 
-        logger.debug(f"Make request to {url} with data {data} and params {kwargs}.")
+        logger.debug("Making request for method %s.", method)
 
         try:
             response = requests.post(url, data=data, **kwargs)
-            logger.debug(f"Response to {url} request is {response.content}.")
+            logger.debug("Response for method %s has HTTP status %s.", method, response.status_code)
 
             if api_type == 'rest':
                 result = response.json()
