@@ -88,6 +88,9 @@ test = [
 release = [
 	"python-semantic-release==10.7.0",
 ]
+package = [
+	"twine==7.0.0",
+]
 
 
 [tool.hatch.envs.default]
@@ -158,6 +161,26 @@ dependency-groups = ["release"]
 preview = "semantic-release --noop version --print"
 beta-preview = "semantic-release --noop version --as-prerelease --prerelease-token b --print"
 changelog = "semantic-release changelog"
+
+
+[tool.hatch.envs.package]
+description = "Distribution metadata validation"
+detached = true
+python = "3.14"
+dependency-groups = ["package"]
+
+[tool.hatch.envs.package.scripts]
+check = "twine check --strict {args:dist/*}"
+
+
+[tool.hatch.envs.compatibility]
+description = "Python 3.10 with consumer-pinned Requests"
+python = "3.10"
+dependency-groups = ["test"]
+dependencies = ["requests==2.28.2"]
+
+[tool.hatch.envs.compatibility.scripts]
+check = "pytest {args:-q}"
 
 
 [tool.hatch.envs.mtest]
