@@ -105,6 +105,8 @@ def _test_request(url, params=None, **kwargs):
 
         currency = data.get('currency', None)
         jsonParams = data.get('jsonParams', None)
+        if isinstance(jsonParams, str):
+            jsonParams = json.loads(jsonParams)
         features = data.get('features', None)
 
         if orderNumber in REGISTER_ERRORS:
