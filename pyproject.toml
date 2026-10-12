@@ -63,9 +63,22 @@ packages = ["gocream_pysberbank"]
 
 
 [dependency-groups]
+docs = [
+	"mkdocs-material==9.7.7",
+	"mkdocstrings-python==2.0.9",
+	"mkdocs-git-revision-date-localized-plugin==1.6.0",
+	"mkdocs-git-authors-plugin==0.10.0",
+	# 0.6.3 закрепляет `mkdocs<=1.6.1` и тянет форк `properdocs`: автор плагина, как и
+	# команда Material, не переходит на MkDocs 2.0. Нам это по пути - material 9.7.7
+	# тоже живёт на 1.6.1.
+	"mkdocs-literate-nav==0.6.3",
+	"mike==2.2.0",
+	"linkchecker==10.6.0",
+	"ruff==0.16.10",
+]
 lint = [
 	"pre-commit==4.6.2",
-	"ruff==0.16.8",
+	"ruff==0.16.10",
 ]
 test = [
 	"pytest==9.1.1",
@@ -114,6 +127,22 @@ dependency-groups = ["test"]
 
 [tool.hatch.envs.test.scripts]
 check = "pytest {args:--cov=gocream_pysberbank --cov-report term-missing}"
+
+
+[tool.hatch.envs.docs]
+description = "Documentation environment"
+python = "3.14"
+dependency-groups = ["docs"]
+
+[tool.hatch.envs.docs.scripts]
+build = "mkdocs build --strict {args}"
+serve = "mkdocs serve {args}"
+links = "linkchecker --config .linkcheckerrc {args:site/index.html}"
+links-external = "linkchecker --config .linkcheckerrc --check-extern {args:https://gocream-labs.github.io/pysberbank/}"
+versions = "mike list {args}"
+deploy = "mike deploy --update-aliases {args}"
+set-default = "mike set-default {args}"
+serve-versions = "mike serve {args}"
 
 
 [tool.hatch.envs.mtest]

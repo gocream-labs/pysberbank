@@ -1,9 +1,12 @@
-# release history
+# Changelog
 
-## Unreleased
+Все заметные изменения проекта документируются в этом файле. Версии следуют [Semantic Versioning](https://semver.org/lang/ru/).
 
-* fix: Exclude credentials, request parameters, URLs, and response bodies from debug logs; retain the API method and HTTP status.
+<!--
+	Файл ведёт python-semantic-release: при выпуске он вставляет новый раздел сразу под маркером ниже. Маркер не удалять - без него обновление молча не произойдёт. Формат разделов и правила ручной правки - в docs/releasing.md.
+-->
 
+<!-- version list -->
 
 ## 0.1.7
 
