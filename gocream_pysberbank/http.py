@@ -64,7 +64,7 @@ class SberbankClient:
         """
 
         if remove_null:
-            data = dict(filter(lambda x: x[1], params.items()))
+            data = {key: value for key, value in params.items() if value is not None}
         else:
             data = params.copy()
 
