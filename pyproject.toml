@@ -85,6 +85,9 @@ test = [
 	"pytest-cov==7.1.0",
 	"pytest-socket==0.8.1",
 ]
+release = [
+	"python-semantic-release==10.7.0",
+]
 
 
 [tool.hatch.envs.default]
@@ -145,6 +148,18 @@ set-default = "mike set-default {args}"
 serve-versions = "mike serve {args}"
 
 
+[tool.hatch.envs.release]
+description = "Release environment"
+detached = true
+python = "3.14"
+dependency-groups = ["release"]
+
+[tool.hatch.envs.release.scripts]
+preview = "semantic-release --noop version --print"
+beta-preview = "semantic-release --noop version --as-prerelease --prerelease-token b --print"
+changelog = "semantic-release changelog"
+
+
 [tool.hatch.envs.mtest]
 description = "Test matrix environment"
 dependency-groups = ["test"]
@@ -199,3 +214,109 @@ testpaths = ["tests"]
 # __init__.py не собирается, чтобы не дублировать импортированные TestCase.
 python_files = ["*.py"]
 addopts = "--disable-socket --ignore=tests/__init__.py"
+
+
+# Релизы: версия и CHANGELOG считаются по emoji-маркерам в коммитах.
+# Проверить, что получится, не записывая ничего: `hatch run release:preview`.
+[tool.semantic_release]
+commit_message = "🔖 (release): Release {version}"
+commit_parser = "emoji"
+version_variables = ["gocream_pysberbank/__init__.py:__version__"]
+tag_format = "v{version}"
+
+[tool.semantic_release.branches.main]
+match = "master"
+prerelease = false
+
+# Ветка для release candidate перед стабильным релизом.
+[tool.semantic_release.branches.next]
+match = "next"
+prerelease = true
+prerelease_token = "rc"
+
+# Ручные beta-релизы можно выпускать из любой рабочей ветки. `master` и
+# `next` обрабатываются более специфичными правилами выше.
+[tool.semantic_release.branches.beta]
+match = "^(?!master$|next$).+"
+prerelease = true
+prerelease_token = "b"
+
+[tool.semantic_release.changelog]
+mode = "update"
+insertion_flag = "<!-- version list -->"
+# Штатные шаблоны PSR печатают заголовком раздела сам emoji-маркер ("### 🏗️"),
+# поэтому в `templates/` лежат свои. Если каталог непустой, PSR берёт только
+# его, штатные шаблоны в рендеринге не участвуют.
+template_dir = "templates"
+
+[tool.semantic_release.commit_parser_options]
+ignore_merge_commits = true
+# Теги перечислены по уровню, чтобы техническое форматирование не выпускало
+# новую версию пакета.
+major_tags = ["💥", ":boom:"]
+minor_tags = ["✨", ":sparkles:"]
+patch_tags = [
+	"🔇", ":mute:",	# удаление небезопасных логов
+	"⚡️", ":zap:",	# производительность
+	"🐛", ":bug:",	# исправление бага
+	"🩹", ":adhesive_bandage:",	# мелкое исправление
+	"🚑️", ":ambulance:",	# критический хотфикс
+	"🔒️", ":lock:",	# безопасность
+	"♻️", ":recycle:",	# рефакторинг
+	"🗑️", ":wastebasket:",	# пометка устаревшего
+	"⚰️", ":coffin:",	# удаление мёртвого кода
+	"🧱", ":bricks:",	# инфраструктура и оснастка
+	"👽️", ":alien:",	# правки под изменения внешнего API
+	"🏷️", ":label:",	# типы
+	"📝", ":memo:",	# документация
+	"🔧", ":wrench:",	# конфигурация
+	"🏗️", ":building_construction:",	# архитектура и сборка
+	"⬆️", ":arrow_up:",	# обновление зависимостей
+	"⬇️", ":arrow_down:",	# понижение зависимостей
+	"➕", ":heavy_plus_sign:",	# добавлена зависимость
+	"➖", ":heavy_minus_sign:",	# удалена зависимость
+	"🌐", ":globe_with_meridians:",	# локализация
+	"✏️", ":pencil2:",	# опечатки
+	"⏪️", ":rewind:",	# откат изменений
+]
+other_allowed_tags = [
+	"🎨", ":art:",	# форматирование и стиль
+	"🧪", ":test_tube:",	# тесты
+	"📄", ":page_facing_up:",	# лицензия
+]
+
+# Продублировать полный список обязательно. Поле `allowed_tags` в
+# EmojiParserOptions вычисляется из значений по умолчанию на этапе объявления
+# dataclass и не пересобирается из переопределённых списков выше. Регулярное
+# выражение парсера строится именно по нему, а уровень версии - по спискам
+# выше. Из-за этого без `allowed_tags` маркеры, объявленные только в
+# `other_allowed_tags`, не распознаются и уезжают в раздел "Other".
+allowed_tags = [
+	"🔇", ":mute:",
+	"💥", ":boom:",
+	"✨", ":sparkles:",
+	"⚡️", ":zap:",
+	"🐛", ":bug:",
+	"🩹", ":adhesive_bandage:",
+	"🚑️", ":ambulance:",
+	"🔒️", ":lock:",
+	"♻️", ":recycle:",
+	"🗑️", ":wastebasket:",
+	"⚰️", ":coffin:",
+	"🧱", ":bricks:",
+	"👽️", ":alien:",
+	"🏷️", ":label:",
+	"📝", ":memo:",
+	"🔧", ":wrench:",
+	"🏗️", ":building_construction:",
+	"⬆️", ":arrow_up:",
+	"⬇️", ":arrow_down:",
+	"➕", ":heavy_plus_sign:",
+	"➖", ":heavy_minus_sign:",
+	"🌐", ":globe_with_meridians:",
+	"✏️", ":pencil2:",
+	"⏪️", ":rewind:",
+	"🎨", ":art:",
+	"🧪", ":test_tube:",
+	"📄", ":page_facing_up:",
+]

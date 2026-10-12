@@ -2,7 +2,8 @@
 ignore=B6,T5
 
 [title-match-regex]
-# Gitlint проверяет только форму заголовка. Автоматизация релизов настраивается отдельным этапом.
+# Gitlint проверяет только форму заголовка. Релизное значение Gitmoji
+# определяет python-semantic-release в pyproject.toml.
 regex=^\S+ \([a-z][a-z0-9-]*\): .+$
 
 [title-max-length]
