@@ -31,13 +31,14 @@ hatch run init
 | Command | Purpose |
 |---|---|
 | `hatch run test:check` | Тесты с покрытием на Python 3.10 |
-| `hatch run mtest:check` | Матрица Python 3.10-3.14 и отчёт `coverage.xml` |
-| `hatch run compatibility:check` | Python 3.10 и Requests 2.28.2 для совместимости с потребителем |
+| `hatch run mtest:check` | Матрица Python × Requests с отчётом `coverage.xml` для каждого прогона |
 | `hatch run lint:check` | Статический анализ Ruff |
 | `hatch run lint:fmt-check` | Проверка форматирования без изменения файлов |
 | `hatch run lint:format` | Автоисправление Ruff и форматирование |
 | `hatch build --clean` | Чистая сборка sdist и wheel |
 | `hatch run package:check` | Строгая проверка метаданных готовых дистрибутивов через Twine |
+
+Матрица проверяет Requests 2.34.2 на Python 3.10-3.14 и Requests 2.28.2 на Python 3.10-3.11. Для одного сочетания используйте `hatch run mtest.py3.10-2.28.2:check`. Локальные прогоны перезаписывают `coverage.xml`, в CI каждый отчёт отдельно отправляется в Codecov.
 
 Начинайте с тестов изменённого компонента, затем запускайте затронутый набор. Например, для подготовки параметров запроса:
 

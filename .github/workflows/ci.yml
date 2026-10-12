@@ -69,7 +69,7 @@ concurrency:
 jobs:
   # Матрица тестов по всем поддерживаемым версиям Python плюс отчёт в Codecov.
   test:
-    name: Test (${{ matrix.python-version }})
+    name: Test (Python ${{ matrix.python-version }} / Requests ${{ matrix.requests }})
     if: ${{ github.event_name == 'pull_request' || inputs.run_tests }}
     runs-on: ubuntu-latest
     strategy:
@@ -81,6 +81,12 @@ jobs:
           - "3.12"
           - "3.13"
           - "3.14"
+        requests: ["2.34.2"]
+        include:
+          - python-version: "3.10"
+            requests: "2.28.2"
+          - python-version: "3.11"
+            requests: "2.28.2"
     steps:
       - name: Setup | Checkout repository
         uses: actions/checkout@v7
@@ -98,9 +104,9 @@ jobs:
           version: "1.18.1"
 
       - name: Action | Run tests
-        run: hatch run "mtest.py${{ matrix.python-version }}:check"
+        run: hatch run "mtest.py${{ matrix.python-version }}-${{ matrix.requests }}:check"
 
-      # Codecov объединяет отчёты матрицы сам, флаг даёт разбивку по версиям.
+      # Codecov объединяет отчёты матрицы сам, флаг обозначает сочетание Python и Requests.
       # Падение загрузки не должно ронять проверки, без токена работает tokenless.
       - name: Action | Upload coverage to Codecov
         uses: codecov/codecov-action@v7
@@ -108,32 +114,9 @@ jobs:
           token: "${{ secrets.CODECOV_TOKEN }}"
           files: coverage.xml
           disable_search: true
-          flags: "py${{ matrix.python-version }}"
-          name: "py${{ matrix.python-version }}"
+          flags: "py${{ matrix.python-version }}-requests${{ matrix.requests }}"
+          name: "py${{ matrix.python-version }}-requests${{ matrix.requests }}"
           fail_ci_if_error: false
-
-  compatibility:
-    name: Compatibility (Python 3.10 / Requests 2.28.2)
-    if: ${{ github.event_name == 'pull_request' || inputs.run_tests }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup | Checkout repository
-        uses: actions/checkout@v7
-
-      - name: Setup | Install Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.10"
-          cache: pip
-          cache-dependency-path: pyproject.toml
-
-      - name: Setup | Install Hatch
-        uses: pypa/hatch@257e27e51a6a5616ed08a39a408a21c35c9931bc
-        with:
-          version: "1.18.1"
-
-      - name: Action | Test consumer compatibility
-        run: hatch run compatibility:check
 
   # Проверка, что дистрибутивы вообще собираются; артефакты не сохраняются.
   package:

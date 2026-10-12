@@ -13,7 +13,7 @@
 
 В pull request запускается CI. Changelog обновляется при выпуске, а не отдельным коммитом в PR. Stable создаёт release-коммит с версией и changelog; beta и RC меняют эти файлы только в рабочем каталоге сборки, тег остаётся на исходном коммите. Поэтому для prerelease используйте wheel и sdist из PyPI или приложений GitHub Release: автоматически созданный архив Source code содержит исходную версию.
 
-Для RC обязательна успешная матрица тестов и проверка совместимости. Ручная beta, как в pycdek, пропускает CI: сначала выполните проверки самостоятельно. Stable полагается на обязательные проверки PR перед merge; запущенный после него CI для `master` не блокирует публикацию.
+Для RC обязательна успешная матрица тестов Python × Requests. Ручная beta, как в pycdek, пропускает CI: сначала выполните проверки самостоятельно. Stable полагается на обязательные проверки PR перед merge; запущенный после него CI для `master` не блокирует публикацию.
 
 
 ## Initial Setup
@@ -22,7 +22,7 @@
 
 1. Отправить в GitHub конфигурацию, исходники и существующие теги `v0.1.x`, сохранив их исходные коммиты.
 2. Создать ветку `next` от согласованного состояния разработки. Ручные workflows доступны после добавления файлов в default branch.
-3. Включить обязательные проверки PR в ruleset `master`: Test (3.10-3.14), Compatibility (Python 3.10 / Requests 2.28.2), Build package, Lint и Documentation. До их успешного завершения релиз не готов.
+3. Включить обязательные проверки PR в ruleset `master`: все семь проверок Test (Python … / Requests …), Build package, Lint и Documentation. До их успешного завершения релиз не готов.
 4. Создать GitHub environment `pypi` и настроить PyPI Trusted Publishing для проекта `gocream-pysberbank`, owner `gocream-labs`, repository `pysberbank`, environment `pypi`. Нужны publishers для `release.yml` и `prerelease.yml`. Если проекта ещё нет, сначала создайте pending publisher для первого выпуска, затем добавьте второй.
 5. Установить GitHub App с `Contents: Read and write`, разрешить ему bypass ruleset `master` для release-коммитов. Сохранить Client ID в Actions variable `RELEASE_APP_CLIENT_ID`, private key - в Actions secret `RELEASE_APP_PRIVATE_KEY`.
 6. Выбрать GitHub Pages source: Deploy from a branch, `gh-pages`, `/ (root)`. Ветку создаёт первый deploy Mike. При необходимости добавить `CODECOV_TOKEN` для загрузки покрытия.

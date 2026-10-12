@@ -1,5 +1,5 @@
 # Настройки Codecov: пороги статусов и комментарий в pull request.
-# Отчёты присылает джоба `test` из ci.yml - по одному на версию Python.
+# Отчёты присылает джоба `test` из ci.yml - по одному на сочетание Python и Requests.
 
 codecov:
   require_ci_to_pass: true
@@ -22,7 +22,7 @@ coverage:
         target: 80%
         informational: true
 
-# Матрица шлёт пять отчётов на коммит; carryforward не нужен, потому что
+# Матрица шлёт семь отчётов на коммит; carryforward не нужен, потому что
 # каждый прогон присылает полный набор флагов.
 flag_management:
   default_rules:

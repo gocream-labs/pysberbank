@@ -173,18 +173,8 @@ dependency-groups = ["package"]
 check = "twine check --strict {args:dist/*}"
 
 
-[tool.hatch.envs.compatibility]
-description = "Python 3.10 with consumer-pinned Requests"
-python = "3.10"
-dependency-groups = ["test"]
-dependencies = ["requests==2.28.2"]
-
-[tool.hatch.envs.compatibility.scripts]
-check = "pytest {args:-q}"
-
-
 [tool.hatch.envs.mtest]
-description = "Test matrix environment"
+description = "Python and Requests test matrix"
 dependency-groups = ["test"]
 
 [tool.hatch.envs.mtest.scripts]
@@ -192,6 +182,14 @@ check = "pytest {args:-q --cov=gocream_pysberbank --cov-report=xml}"
 
 [[tool.hatch.envs.mtest.matrix]]
 python = ["3.10", "3.11", "3.12", "3.13", "3.14"]
+requests = ["2.34.2"]
+
+[[tool.hatch.envs.mtest.matrix]]
+python = ["3.10", "3.11"]
+requests = ["2.28.2"]
+
+[tool.hatch.envs.mtest.overrides]
+matrix.requests.dependencies = ["requests=={matrix:requests}"]
 
 
 [tool.ruff]
