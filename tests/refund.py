@@ -1,21 +1,18 @@
-# -*- coding: utf-8 -*-
-
-from unittest import TestCase
-from unittest.mock import MagicMock
-from unittest.mock import patch
 import io
 import json
-import requests
 import unittest
+from unittest import TestCase
+from unittest.mock import patch
 
-from gocream_pysberbank import Sberbank
+import requests
+
 import gocream_pysberbank
-
+from gocream_pysberbank import Sberbank
 
 
 REQUEST = {
-    'errorCode': "0",
-    'errorMessage': "Успешно",
+    "errorCode": "0",
+    "errorMessage": "Успешно",
 }
 ERRORS = {
     "0": {
@@ -54,7 +51,7 @@ ERRORS = {
         "errorCode": "7",
         "errorMessage": "Системная ошибка.",
     },
-    '42': REQUEST
+    "42": REQUEST,
 }
 
 
@@ -62,16 +59,14 @@ def _test_request(url, params=None, **kwargs):
     response = requests.Response()
 
     if url == "https://3dsec.sberbank.ru/payment/rest/refund.do":
-        data = kwargs['data']
+        data = kwargs["data"]
 
-        userName = data.get('userName', None)
-        password = data.get('password', None)
-        orderId = data.get('orderId', None)
+        orderId = data.get("orderId", None)
 
         if orderId in ERRORS:
             result = orderId
         else:
-            result = '42'
+            result = "42"
 
         result = ERRORS[result]
 
@@ -80,9 +75,8 @@ def _test_request(url, params=None, **kwargs):
 
 
 class RefundTestCase(TestCase):
-
     def setUp(self):
-        self.pathed_requests = patch('requests.post', side_effect=_test_request)
+        self.pathed_requests = patch("requests.post", side_effect=_test_request)
         self.mock_requests = self.pathed_requests.start()
 
     def tearDown(self):
@@ -91,9 +85,9 @@ class RefundTestCase(TestCase):
     def test_refund(self):
         api = Sberbank("test_username", "test_password")
         response = api.refund(
-            orderId = "4302d369-a5e8-4432-a5e5-42acfab52c86",
-            refundAmount = 20000,
-            language = "ru",
+            orderId="4302d369-a5e8-4432-a5e5-42acfab52c86",
+            refundAmount=20000,
+            language="ru",
         )
         self.assertIsNotNone(response)
         self.assertEqual(response, REQUEST)
@@ -103,12 +97,12 @@ class RefundTestCase(TestCase):
 
         for k, v in ERRORS.items():
             with self.subTest(orderNumber=k):
-                if k in ['42', '0']:
+                if k in ["42", "0"]:
                     continue
 
                 with self.assertRaises(gocream_pysberbank.errors.SberbankApiException):
-                    response = api.refund(k, 20000)
+                    api.refund(k, 20000)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
