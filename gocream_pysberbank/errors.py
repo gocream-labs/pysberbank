@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from requests import RequestException
 
 
@@ -25,7 +24,7 @@ class SberbankApiException(SberbankException):
         self.code = code
         self.message = message
 
-        super().__init__(f'Error {self.code}: {self.message}')
+        super().__init__(f"Error {self.code}: {self.message}")
 
 
 class SberbankRequestException(BaseSberbankException, RequestException):
