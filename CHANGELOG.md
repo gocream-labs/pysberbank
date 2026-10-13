@@ -8,6 +8,17 @@
 
 <!-- version list -->
 
+## v1.0.0 (2026-10-13)
+
+### Refactoring
+
+- 🎨 **chore**: Ignore linting commit in blame
+  ([`f4d422c`](https://github.com/gocream-labs/pysberbank/commit/f4d422c9add84b6870cbbc358ccb92cced2d0e9b))
+
+- 🎨 **chore**: Linting code
+  ([`97dcd7d`](https://github.com/gocream-labs/pysberbank/commit/97dcd7d1b956ac22b85a8b553e9742d7a127df46))
+
+
 ## Unreleased
 
 ### Security
